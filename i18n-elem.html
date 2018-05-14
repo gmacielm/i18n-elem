@@ -1,57 +1,96 @@
 <link rel="import" href="../polymer/polymer-element.html">
 <link rel="import" href="../paper-dialog/paper-dialog.html">
 <link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="../iron-ajax/iron-ajax.html">
+<link rel="import" href="../paper-listbox/paper-listbox.html">
+<link rel="import" href="../paper-item/paper-item.html">
 
 <dom-module id="i18n-elem">
-  <template>
-    <style>
-      :host {
-        display: block;
-      }
-      paper-dialog.colored {
-        border: 2px solid;
-        border-color: #F05D3D;
-        background-color: #f1f8e9;
-        color: #F05D3D;
-      }
-    </style>
-    <h1>Hello [[prop1]]</h1>
-    <paper-button on-tap="toggleError">Error</paper-button>
-    <paper-dialog id="error_dialog" class="colored">
-      <h2>Error</h2>
-      <h4>El lenguaje que seleccionó no esta disponible, por favor intente con otro.</h4>
-      <paper-button on-tap="toggleError">Close</paper-button>
-    </paper-dialog>
-  </template>
+    <template>
+        <style>
+            :host {
+                display: block;
+                padding: 10px;
+            }
 
-  <script>
-    /**
-     * `i18n-elem`
-     *  element version of the language switcher
-     *
-     * @customElement
-     * @polymer
-     * @demo demo/index.html
-     */
-    class I18nElem extends Polymer.Element {
-      static get is() { return 'i18n-elem'; }
-      static get properties() {
-        return {
-          prop1: {
-            type: String,
-            value: 'i18n-elem'
-          }
-        };
-      }
-      connectedCallback() {
-        super.connectedCallback();
-        console.log('my-element created!');
-      }
-      toggleError() {
-        this.$.error_dialog.toggle();
-      }
-    }
+            h1 {
+                color: rgb(31, 77, 146);
+                font-family: Arial, Helvetica, sans-serif;
+             }
+            paper-dialog.colored {
+              border: 2px solid;
+              border-color: #F05D3D;
+              background-color: #f1f8e9;
+              color: #F05D3D;
+            }
+        </style>
+        <iron-ajax
+                id="http"
+                url="/data/[[selectedItem]].json"
+                handle-as="json"
+                on-response="handleResponse"
+                on-error="toggleError"
+        ></iron-ajax>
+        <div on-lang-changed="changeLanguage">
+            <h1>[[data.title]]</h1>
+            <paper-listbox
+                    class="dropdown-content"
+                    attr-for-selected="selected-item"
+                    selected="{{selectedItem}}"
+                    fallback-selection="spanish">
+                <paper-item selected-item="hebrew">עברית</paper-item>
+                <paper-item selected-item="spanish">Español</paper-item>
+                <paper-item selected-item="english">English</paper-item>
+                <paper-item selected-item="arab">العربية</paper-item>
+                <paper-item selected-item="ja">日本</paper-item>
+            </paper-listbox>
+            <paper-dialog id="error_dialog" class="colored">
+              <h2>Error</h2>
+              <h4>El lenguaje que seleccionó no esta disponible, por favor intente con otro.</h4>
+              <paper-button on-tap="toggleError">Close</paper-button>
+            </paper-dialog>
+        </div>
 
-    window.customElements.define(I18nElem.is, I18nElem);
-  </script>
+    </template>
+
+    <script>
+        class i18nElem extends Polymer.Element {
+            static get is() {
+                return 'i18n-elem';
+            }
+
+            static get properties() {
+                return {
+                    selectedItem :{
+                      type: String,
+                        value: 'spanish',
+                        observer: 'requestContent'
+                    },
+                    data: {
+                        type: Object,
+                        value: {}
+                    }
+                };
+            }
+
+            handleResponse() {
+                this.set('data', this.$.http.lastResponse);
+                this.dispatchEvent(new CustomEvent('lang-changed', {
+                    bubbles: true,
+                    composed: true,
+                    detail: this.data
+                }));
+            }
+
+            requestContent() {
+                console.log(`seleccionado : [${this.selectedItem}]`);
+                this.$.http.generateRequest();
+            }
+            toggleError() {
+              this.$.error_dialog.toggle();
+            }
+        }  // class
+
+        window.customElements.define(i18nElem.is, i18nElem);
+    </script>
 </dom-module>
