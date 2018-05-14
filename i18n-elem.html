@@ -2,6 +2,7 @@
 <link rel="import" href="../iron-ajax/iron-ajax.html">
 <link rel="import" href="../paper-listbox/paper-listbox.html">
 <link rel="import" href="../paper-item/paper-item.html">
+<link rel="import" href="../paper-dropdown-menu/paper-dropdown-menu.html">
 
 <dom-module id="i18n-elem">
     <template>
@@ -24,16 +25,19 @@
         ></iron-ajax>
         <div on-lang-changed="changeLanguage">
             <h1>[[data.title]]</h1>
-            <paper-listbox
-                    class="dropdown-content"
-                    attr-for-selected="selected-item"
-                    selected="{{selectedItem}}"
-                    fallback-selection="spanish">
-                <paper-item selected-item="hebrew">עברית</paper-item>
-                <paper-item selected-item="spanish">Español</paper-item>
-                <paper-item selected-item="english">English</paper-item>
-                <paper-item selected-item="arab">العربية</paper-item>
-            </paper-listbox>
+            <paper-dropdown-menu  noink no-animations Label="Language">
+              <paper-listbox
+                      slot="dropdown-content"
+                      attr-for-selected="selected-item"
+                      selected="{{selectedItem}}"
+                      fallback-selection="es">
+                  <paper-item selected-item="he">עברית</paper-item>
+                  <paper-item selected-item="es">Español</paper-item>
+                  <paper-item selected-item="en">English</paper-item>
+                  <paper-item selected-item="ar">العربية</paper-item>
+              </paper-listbox>
+            </paper-dropdown-menu>
+
         </div>
 
     </template>
@@ -68,7 +72,6 @@
             }
 
             requestContent() {
-                console.log(`seleccionado : [${this.selectedItem}]`);
                 this.$.http.generateRequest();
             }
         }  // class
