@@ -1,5 +1,7 @@
-<link rel="import" href="../bower_components/polymer/polymer-element.html">
-<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../iron-ajax/iron-ajax.html">
+<link rel="import" href="../paper-listbox/paper-listbox.html">
+<link rel="import" href="../paper-item/paper-item.html">
 
 <dom-module id="i18n-elem">
     <template>
@@ -15,7 +17,7 @@
              }
         </style>
         <iron-ajax
-                id="http" 
+                id="http"
                 url="/data/[[selectedItem]].json"
                 handle-as="json"
                 on-response="handleResponse"
@@ -33,7 +35,7 @@
                 <paper-item selected-item="arab">العربية</paper-item>
             </paper-listbox>
         </div>
-        
+
     </template>
 
     <script>
@@ -54,7 +56,7 @@
                         value: {}
                     }
                 };
-            }   
+            }
 
             handleResponse() {
                 this.set('data', this.$.http.lastResponse);
