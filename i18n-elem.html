@@ -1,36 +1,76 @@
-<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
 
 <dom-module id="i18n-elem">
-  <template>
-    <style>
-      :host {
-        display: block;
-      }
-    </style>
-    <h2>Hello [[prop1]]!</h2>
-  </template>
+    <template>
+        <style>
+            :host {
+                display: block;
+                padding: 10px;
+            }
 
-  <script>
-    /**
-     * `i18n-elem`
-     *  element version of the language switcher 
-     *
-     * @customElement
-     * @polymer
-     * @demo demo/index.html
-     */
-    class I18nElem extends Polymer.Element {
-      static get is() { return 'i18n-elem'; }
-      static get properties() {
-        return {
-          prop1: {
-            type: String,
-            value: 'i18n-elem'
-          }
-        };
-      }
-    }
+            h1 {
+                color: rgb(31, 77, 146);
+                font-family: Arial, Helvetica, sans-serif;
+             }
+        </style>
+        <iron-ajax
+                id="http" 
+                url="/data/[[selectedItem]].json"
+                handle-as="json"
+                on-response="handleResponse"
+        ></iron-ajax>
+        <div on-lang-changed="changeLanguage">
+            <h1>[[data.title]]</h1>
+            <paper-listbox
+                    class="dropdown-content"
+                    attr-for-selected="selected-item"
+                    selected="{{selectedItem}}"
+                    fallback-selection="spanish">
+                <paper-item selected-item="hebrew">עברית</paper-item>
+                <paper-item selected-item="spanish">Español</paper-item>
+                <paper-item selected-item="english">English</paper-item>
+                <paper-item selected-item="arab">العربية</paper-item>
+            </paper-listbox>
+        </div>
+        
+    </template>
 
-    window.customElements.define(I18nElem.is, I18nElem);
-  </script>
+    <script>
+        class i18nElem extends Polymer.Element {
+            static get is() {
+                return 'i18n-elem';
+            }
+
+            static get properties() {
+                return {
+                    selectedItem :{
+                      type: String,
+                        value: 'spanish',
+                        observer: 'requestContent'
+                    },
+                    data: {
+                        type: Object,
+                        value: {}
+                    }
+                };
+            }   
+
+            handleResponse() {
+                this.set('data', this.$.http.lastResponse);
+                this.dispatchEvent(new CustomEvent('lang-changed', {
+                    bubbles: true,
+                    composed: true,
+                    detail: this.data
+                }));
+            }
+
+            requestContent() {
+                console.log(`seleccionado : [${this.selectedItem}]`);
+                this.$.http.generateRequest();
+            }
+        }  // class
+
+        window.customElements.define(i18nElem.is, i18nElem);
+    </script>
 </dom-module>
