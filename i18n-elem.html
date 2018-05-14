@@ -1,4 +1,6 @@
 <link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../paper-dialog/paper-dialog.html">
+<link rel="import" href="../paper-button/paper-button.html">
 
 <dom-module id="i18n-elem">
   <template>
@@ -6,14 +8,26 @@
       :host {
         display: block;
       }
+      paper-dialog.colored {
+        border: 2px solid;
+        border-color: #F05D3D;
+        background-color: #f1f8e9;
+        color: #F05D3D;
+      }
     </style>
-    <h2>Hello [[prop1]]!</h2>
+    <h1>Hello [[prop1]]</h1>
+    <paper-button on-tap="toggleError">Error</paper-button>
+    <paper-dialog id="error_dialog" class="colored">
+      <h2>Error</h2>
+      <h4>El lenguaje que seleccionó no esta disponible, por favor intente con otro.</h4>
+      <paper-button on-tap="toggleError">Close</paper-button>
+    </paper-dialog>
   </template>
 
   <script>
     /**
      * `i18n-elem`
-     *  element version of the language switcher 
+     *  element version of the language switcher
      *
      * @customElement
      * @polymer
@@ -28,6 +42,13 @@
             value: 'i18n-elem'
           }
         };
+      }
+      connectedCallback() {
+        super.connectedCallback();
+        console.log('my-element created!');
+      }
+      toggleError() {
+        this.$.error_dialog.toggle();
       }
     }
 
