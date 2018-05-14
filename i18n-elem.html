@@ -1,0 +1,99 @@
+<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../paper-dialog/paper-dialog.html">
+<link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="../iron-ajax/iron-ajax.html">
+<link rel="import" href="../paper-listbox/paper-listbox.html">
+<link rel="import" href="../paper-item/paper-item.html">
+<link rel="import" href="../paper-dropdown-menu/paper-dropdown-menu.html">
+
+<dom-module id="i18n-elem">
+    <template>
+        <style>
+            :host {
+                display: block;
+                padding: 10px;
+            }
+
+            h1 {
+                color: rgb(31, 77, 146);
+                font-family: Arial, Helvetica, sans-serif;
+             }
+            paper-dialog.colored {
+              border: 2px solid;
+              border-color: #F05D3D;
+              background-color: #f1f8e9;
+              color: #F05D3D;
+            }
+        </style>
+        <iron-ajax
+                id="http"
+                url="/data/[[selectedItem]].json"
+                handle-as="json"
+                on-response="handleResponse"
+                on-error="toggleError"
+        ></iron-ajax>
+        <div on-lang-changed="changeLanguage">
+            <h1>[[data.title]]</h1>
+
+            <paper-dropdown-menu  noink no-animations Label="Language">
+              <paper-listbox
+                      slot="dropdown-content"
+                      attr-for-selected="selected-item"
+                      selected="{{selectedItem}}"
+                      fallback-selection="es">
+                  <paper-item selected-item="ar">العربية</paper-item>
+                  <paper-item selected-item="en">English</paper-item>
+                  <paper-item selected-item="es">Español</paper-item>
+                  <paper-item selected-item="he">עברית</paper-item>
+                  <paper-item selected-item="ja">日本</paper-item>
+              </paper-listbox>
+            </paper-dropdown-menu>
+            <paper-dialog id="error_dialog" class="colored">
+              <h2>Error</h2>
+              <h4>El lenguaje que seleccionó no esta disponible, por favor intente con otro.</h4>
+              <paper-button on-tap="toggleError">Close</paper-button>
+            </paper-dialog>
+        </div>
+
+    </template>
+
+    <script>
+        class i18nElem extends Polymer.Element {
+            static get is() {
+                return 'i18n-elem';
+            }
+
+            static get properties() {
+                return {
+                    selectedItem :{
+                      type: String,
+                        value: 'spanish',
+                        observer: 'requestContent'
+                    },
+                    data: {
+                        type: Object,
+                        value: {}
+                    }
+                };
+            }
+
+            handleResponse() {
+                this.set('data', this.$.http.lastResponse);
+                this.dispatchEvent(new CustomEvent('lang-changed', {
+                    bubbles: true,
+                    composed: true,
+                    detail: this.data
+                }));
+            }
+
+            requestContent() {
+                this.$.http.generateRequest();
+            }
+            toggleError() {
+              this.$.error_dialog.toggle();
+            }
+        }  // class
+
+        window.customElements.define(i18nElem.is, i18nElem);
+    </script>
+</dom-module>
