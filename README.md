@@ -1,21 +1,60 @@
 # \<i18n-elem\>
 
- element version of the language switcher 
+This element switch the language of a html text.
 
-## Install the Polymer-CLI
-
-First, make sure you have the [Polymer CLI](https://www.npmjs.com/package/polymer-cli) installed. Then run `polymer serve` to serve your element locally.
-
-## Viewing Your Element
-
+## For view demo of component execute
 ```
 $ polymer serve
 ```
+and go to this url: localhost:8081/components/i18n-elem/demo/
 
-## Running Tests
-
+## Running Tests with:
 ```
 $ polymer test
 ```
 
-Your application is already set up to be tested via [web-component-tester](https://github.com/Polymer/web-component-tester). Run `polymer test` to run your application's test suite locally.
+## Usage
+
+```html
+<i18n-elem selectedItem="[[lang]]" selectedUrl="[[url]]"></i18n-elem>
+```
+The language can be modified by a dropdown button or normal buttons that changes the lang
+properties, if the langs does not exist will be appear a modal with the error.
+
+We must to put our json database with our langs on an folder and save our json documents.
+the url must be have this formar:
+
+foldeUrl/fordeName/langCode.json
+
+the folder struc should be so:
+
+**FolderName as a root**
+
+| languaje        | document           | iso  |
+| ------------- |:-------------:| -----:|
+| Spanish      | es.json | 639-1 |
+| English      | en.json | 639-1 |
+| French | fr.json | 639-1 |
+
+[for motre info view iso-639-1](https://es.wikipedia.org/wiki/ISO_639-1)
+
+## Properties
+
+selectedItem is a String, default is 'es'
+selectedUrl is a String, does not have default value
+
+
+## History
+
+The globalization require the apps can deploy in diferents languages,
+thinking in this ploblem we create this component.
+
+## Credits
+
+@hectorcaire
+@davidhdzhdz
+@gmacielm
+
+## License
+
+MIT License
