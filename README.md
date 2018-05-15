@@ -1,18 +1,13 @@
 # \<i18n-elem\>
-
  element version of the language switcher
 
-## Install the Polymer-CLI
-
-First, make sure you have the [Polymer CLI](https://www.npmjs.com/package/polymer-cli) installed. Then run `polymer serve` to serve your element locally.
-
-## Viewing Your Element
+## View this element with:
 
 ```
 $ polymer serve
 ```
 
-## Running Tests
+## Running Tests with:
 
 ```
 $ polymer test
