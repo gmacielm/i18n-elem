@@ -4,7 +4,6 @@
 <link rel="import" href="../iron-ajax/iron-ajax.html">
 <link rel="import" href="../paper-listbox/paper-listbox.html">
 <link rel="import" href="../paper-item/paper-item.html">
-<link rel="import" href="../paper-dropdown-menu/paper-dropdown-menu.html">
 
 <dom-module id="i18n-elem">
     <template>
@@ -27,13 +26,13 @@
         </style>
         <iron-ajax
                 id="http"
-                url="/data/[[selectedItem]].json"
+                url="/demo/data/[[selectedItem]].json"
                 handle-as="json"
                 on-response="handleResponse"
                 on-error="toggleError"
         ></iron-ajax>
-        <div on-lang-changed="changeLanguage">
-            <h1>[[data.title]]</h1>
+        <div >
+
 
             <paper-dropdown-menu  noink no-animations Label="Language">
               <paper-listbox
@@ -67,7 +66,7 @@
                 return {
                     selectedItem :{
                       type: String,
-                        value: 'es',
+                        value: '',
                         observer: 'requestContent'
                     },
                     data: {
@@ -75,6 +74,11 @@
                         value: {}
                     }
                 };
+            }
+
+            connectedCallback(){
+              super.connectedCallback();
+              this.set('selectedItem','es');
             }
 
             handleResponse() {
@@ -87,6 +91,7 @@
             }
 
             requestContent() {
+              if (this.selectedItem!=='')
                 this.$.http.generateRequest();
             }
             toggleError() {

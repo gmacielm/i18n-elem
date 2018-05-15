@@ -10,6 +10,8 @@
 
     <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
     <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+
+    <link rel="import" href="../../paper-dropdown-menu/paper-dropdown-menu.html">
     <link rel="import" href="../i18n-elem.html">
 
     <custom-style>
@@ -18,13 +20,23 @@
     </custom-style>
   </head>
   <body>
+    <script>
+      document.addEventListener("lang-changed", (event)=>{
+        let data= event.detail;
+        document.querySelector("#title").innerHTML=data.title;
+      })
+    </script>
     <div class="vertical-section-container centered">
       <h3>Basic i18n-elem demo</h3>
       <demo-snippet>
         <template>
-          <i18n-elem></i18n-elem>
+          <div>
+            <h1 id="title"></h1>
+            <i18n-elem></i18n-elem>
+          </div>
         </template>
       </demo-snippet>
     </div>
   </body>
+
 </html>
