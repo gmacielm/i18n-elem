@@ -29,7 +29,7 @@ foldeUrl/fordeName/langCode.json
 
 the folder struc should be so:
 
-** FolderName as a root **
+**FolderName as a root**
 
 | languaje        | document           | iso  |
 | ------------- |:-------------:| -----:|
