@@ -1,7 +1,9 @@
 <link rel="import" href="../polymer/polymer-element.html">
 <link rel="import" href="../paper-dialog/paper-dialog.html">
 <link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="../polymer/lib/elements/dom-repeat.html">
 <link rel="import" href="../iron-ajax/iron-ajax.html">
+<link rel="import" href="../paper-dropdown-menu/paper-dropdown-menu.html">
 <link rel="import" href="../paper-listbox/paper-listbox.html">
 <link rel="import" href="../paper-item/paper-item.html">
 
@@ -16,41 +18,38 @@
             h1 {
                 color: rgb(31, 77, 146);
                 font-family: Arial, Helvetica, sans-serif;
-             }
+            }
+
             paper-dialog.colored {
-              border: 2px solid;
-              border-color: #F05D3D;
-              background-color: #f1f8e9;
-              color: #F05D3D;
+                border: 2px solid;
+                border-color: #F05D3D;
+                background-color: #f1f8e9;
+                color: #F05D3D;
             }
         </style>
         <iron-ajax
                 id="http"
-                url="/demo/data/[[selectedItem]].json"
+                url="[[path]]/[[languageSelected]].json"
                 handle-as="json"
                 on-response="handleResponse"
-                on-error="toggleError"
-        ></iron-ajax>
-        <div >
-
-
-            <paper-dropdown-menu  noink no-animations Label="Language">
-              <paper-listbox
-                      slot="dropdown-content"
-                      attr-for-selected="selected-item"
-                      selected="{{selectedItem}}"
-                      fallback-selection="es">
-                  <paper-item selected-item="ar">العربية</paper-item>
-                  <paper-item selected-item="en">English</paper-item>
-                  <paper-item selected-item="es">Español</paper-item>
-                  <paper-item selected-item="he">עברית</paper-item>
-                  <paper-item selected-item="ja">日本</paper-item>
-              </paper-listbox>
+                on-error="toggleError">
+        </iron-ajax>
+        <div hidden$="[[!isVisible]]">
+            <paper-dropdown-menu noink no-animations Label="Language">
+                <paper-listbox
+                        slot="dropdown-content"
+                        attr-for-selected="selected-item"
+                        selected="{{languageSelected}}"
+                        fallback-selection="es">
+                    <template is="dom-repeat" items="[[availableLanguages]]" as="language">
+                        <paper-item selected-item="[[language.key]]">[[language.name]]</paper-item>
+                    </template>
+                </paper-listbox>
             </paper-dropdown-menu>
             <paper-dialog id="error_dialog" class="colored">
-              <h2>Error</h2>
-              <h4>El lenguaje que seleccionó no esta disponible, por favor intente con otro.</h4>
-              <paper-button on-tap="toggleError">Close</paper-button>
+                <h2>Error</h2>
+                <h4>El lenguaje que seleccionó no esta disponible, por favor intente con otro.</h4>
+                <paper-button on-tap="toggleError">Close</paper-button>
             </paper-dialog>
         </div>
 
@@ -64,21 +63,34 @@
 
             static get properties() {
                 return {
-                    selectedItem :{
-                      type: String,
+                    availableLanguages: {
+                        type: Array,
+                        value: []
+                    },
+                    languageSelected: {
+                        type: String,
                         value: '',
+                        reflectToAttribute: true,
                         observer: 'requestContent'
                     },
                     data: {
                         type: Object,
                         value: {}
+                    },
+                    path: {
+                        type: String,
+                        value: ''
+                    },
+                    isVisible: {
+                        type: Boolean,
+                        value: false
                     }
                 };
             }
 
-            connectedCallback(){
-              super.connectedCallback();
-              this.set('selectedItem','es');
+            connectedCallback() {
+                super.connectedCallback();
+                this.set('languageSelected', 'es');
             }
 
             handleResponse() {
@@ -91,11 +103,12 @@
             }
 
             requestContent() {
-              if (this.selectedItem!=='')
-                this.$.http.generateRequest();
+                if (this.languageSelected !== '')
+                    this.$.http.generateRequest();
             }
+
             toggleError() {
-              this.$.error_dialog.toggle();
+                this.$.error_dialog.toggle();
             }
         }  // class
 

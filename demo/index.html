@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
 
@@ -10,33 +10,77 @@
 
     <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
     <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+    <link rel="import" href="../../polymer/lib/elements/dom-bind.html">
 
-    <link rel="import" href="../../paper-dropdown-menu/paper-dropdown-menu.html">
+    <link rel="import" href="../../paper-button/paper-button.html">
     <link rel="import" href="../i18n-elem.html">
 
     <custom-style>
-      <style is="custom-style" include="demo-pages-shared-styles">
-      </style>
+        <style is="custom-style" include="demo-pages-shared-styles">
+        </style>
     </custom-style>
-  </head>
-  <body>
-    <script>
-      document.addEventListener("lang-changed", (event)=>{
-        let data= event.detail;
-        document.querySelector("#title").innerHTML=data.title;
-      })
-    </script>
-    <div class="vertical-section-container centered">
-      <h3>Basic i18n-elem demo</h3>
-      <demo-snippet>
+</head>
+<body>
+<div class="vertical-section-container centered">
+    <h3>Basic i18n-elem demo</h3>
+    <demo-snippet>
         <template>
-          <div>
-            <h1 id="title"></h1>
-            <i18n-elem></i18n-elem>
-          </div>
+            <div>
+                <dom-bind>
+                    <template>
+                        <h2 id="title"></h2>
+                        <template is="dom-repeat" items="[[languages]]" as="language">
+                            <paper-button selected-item="[[language.key]]" on-tap="handler">[[language.name]]
+                            </paper-button>
+                        </template>
+                        <i18n-elem language-selected="[[languageSelected]]" path="[[path]]" id="i18n"
+                                   available-languages="[[languages]]" is-visible="[[isVisible]]"></i18n-elem>
+                    </template>
+                </dom-bind>
+                <script>
+
+                    document.addEventListener('lang-changed', (event) => {
+                        let data = event.detail;
+                        document.querySelector('#title').innerHTML = data.title;
+                    });
+
+                    const container = document.querySelector('dom-bind');
+
+                    // set data property on dom-bind
+                    container.languages = [
+                        {
+                            key: 'es',
+                            name: 'Español'
+                        },
+                        {
+                            key: 'ar',
+                            name: 'العربية'
+                        },
+                        {
+                            key: 'en',
+                            name: 'English'
+                        },
+                        {
+                            key: 'he',
+                            name: 'עברית'
+                        },
+                        {
+                            key: 'jp',
+                            name: '日本'
+                        }
+                    ];
+                    container.path = './data';
+                    container.isVisible = true;
+
+                    container.handler = (event) => {
+                        container.languageSelected = null;
+                        container.languageSelected = event.model.language.key;
+                    };
+                </script>
+            </div>
         </template>
-      </demo-snippet>
-    </div>
-  </body>
+    </demo-snippet>
+</div>
+</body>
 
 </html>
